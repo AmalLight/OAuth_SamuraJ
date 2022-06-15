@@ -1,0 +1,14 @@
+[Unit]
+Description=Paramiko Shell
+After=network.target
+
+[Service]
+Type=simple
+User=kaumi
+Group=kaumi
+WorkingDirectory=/home/kaumi/flask-api-rest_and-oath/Flask_basic_server_with_paramico/
+ExecStart=/usr/bin/python3 ./paramiko_app.py
+Restart=always
+
+[Install]
+WantedBy=multi-user.target

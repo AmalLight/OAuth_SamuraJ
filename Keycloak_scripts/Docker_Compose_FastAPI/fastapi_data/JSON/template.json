@@ -1,0 +1,85 @@
+{
+  "INFO" : {
+
+     " & " : " & IS And                                    " ,
+     " ! " : " ! IS Not          := 1&2&3!2 == 1,3         " ,
+     " U " : " U IS Until if for := 2U6     == 1,2,3,4,5,6 " ,
+     " . " : " . IS EMPTY_ARRAY  := MUST BE ALONE          " ,
+
+     " EXAMPLE " : " 1U4!2&6U8 == 1,3,4,6,7,8           " ,
+     " ORDER   " : " ( EMPTY ) OR ( NOT - UNTIL - AND ) "
+  } ,
+
+  "Name" : {
+
+    "None" : [ "ip0" , "." , "1U99" , 1 ] ,
+
+    "Machine_docker" : [ "root@192.168.56.107" , "." , "1U99!5U9&21U24&28!22" , 2 ] ,
+    
+    "NO_Machine_1" : [ "ip1" , "." , "1U99!5U9&21U24!23" , 3 ] ,
+    "NO_Machine_2" : [ "ip1" , "." , "1U99!5U9&21U24!24" , 4 ]
+  } ,
+
+  "Actions" : {
+
+    "Sistema" : {
+
+      "None"    : [ "cmd0" , "10&11&12"       , "." , 5 ] ,
+      "Spegni"  : [ "cmd1" , "10&11&12!10"    , "." , 6 ] ,
+      "Accendi" : [ "cmd2" , "10&11&12!11"    , "." , 7 ] ,
+      "Iberna"  : [ "cmd3" , "10&11&12!12"    , "." , 8 ] ,
+      "Riavvia" : [ "cmd4" , "10&11&12!10&12" , "." , 9 ]
+    } ,
+
+    "Shell1" : {
+
+      "None"    : [ "cmd5" , "." , "." , 10 ] ,
+      "Azione5" : [ "cmd6" , "." , "." , 11 ] ,
+      "Azione6" : [ "cmd7" , "." , "." , 12 ]
+    } ,
+
+    "Shell2" : {
+
+      "None"    : [ "cmd8"  , "." , "17" , 13 ] ,
+      "Azione7" : [ "cmd9"  , "." , "18" , 14 ] ,
+      "Azione8" : [ "cmd10" , "." , "19" , 15 ] ,
+      "Azione9" : [ "cmd11" , "." , "20" , 16 ]
+    } ,
+
+    "Shell3" : {
+
+      "None"     : [ "cmd12" , "." , "." , 17 ] ,
+      "Azione10" : [ "cmd13" , "." , "." , 18 ] ,
+      "Azione11" : [ "cmd14" , "." , "." , 19 ] ,
+      "Azione12" : [ "cmd15" , "." , "." , 20 ]
+    } ,
+
+    "Well_Known" : {
+
+      "None"           : [ "cmd16" , "."  , "."  , 21 ] ,
+      "docker_ps"      : [ "cmd17" , "."  , "."  , 22 ] ,
+      "docker_restart" : [ "cmd18" , "29" , "28" , 23 ] ,
+      "reboot"         : [ "cmd19" , "28" , "29" , 24 ]
+    } ,
+    
+    "Rombo_boxes" : {
+
+      "None"           : [ "cmd20" , "." , "." , 25 ] ,
+      "rombo1"         : [ "cmd21" , "." , "." , 26 ]
+
+    } ,
+
+    "Tests" : {
+
+      "None" : [ "cmd22"       , "." , "." , 27 ] ,
+      "home" : [ "echo $HOME"  , "." , "." , 28 ] ,
+      "myip" : [ "ip a"        , "." , "." , 29 ]
+    }
+  } ,
+  
+  "Groups" : {
+  
+     "/Beetola"  : "1U4&21U24&28&29",
+     "/Beetola2" : "40&50"
+  }
+}

@@ -1,0 +1,80 @@
+version: '3'
+# ---------------------------------------------------------
+# ---------------------------------------------------------
+services:
+# ---------------------------------------------------------
+  postgres:
+    image: postgres:latest
+    volumes:
+      - ./postgres_data:/var/lib/postgresql/data
+    environment:
+      POSTGRES_DB: keycloak
+      POSTGRES_USER: keycloak
+      POSTGRES_PASSWORD: password
+    networks:
+      keycloak-network-backend:
+        ipv4_address: 172.16.238.2
+# ---------------------------------------------------------
+  frontend:
+    build:
+      context: .
+      dockerfile: ./frontend/Dockerfile
+    volumes: 
+      - ./frontend/:/frontend_files/
+      - /etc/localtime:/etc/localtime
+      - ./frontend/httplib2_wrap_socket.py:/usr/local/lib/python3.10/site-packages/httplib2/__init__.py
+    environment:
+      PYTHONHTTPSVERIFY: 0
+    networks:
+      keycloak-network-backend:
+        ipv4_address: 172.16.238.3
+    extra_hosts:
+      - frontend:172.16.238.5
+      - keycloak:172.16.238.5
+# ---------------------------------------------------------
+  keycloak:
+    image: jboss/keycloak
+    volumes:
+      - ./keycloak_data:/opt/jboss/keycloak/standalone/data/
+      - /etc/localtime:/etc/localtime
+    environment:
+      DB_VENDOR: POSTGRES
+      DB_ADDR: postgres
+      DB_DATABASE: keycloak
+      DB_USER: keycloak
+      DB_SCHEMA: public
+      DB_PASSWORD: password
+      KEYCLOAK_USER: admin
+      KEYCLOAK_PASSWORD: admin
+      KEYCLOAK_FRONTEND_URL: https://keycloak/auth
+    networks:
+      keycloak-network-backend:
+        ipv4_address: 172.16.238.4
+    extra_hosts:
+      - keycloak:172.16.238.5
+    depends_on:
+      - postgres
+# ---------------------------------------------------------
+  nginx: 
+    image: nginx:latest
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf
+      - /etc/localtime:/etc/localtime
+      - ./certificates:/etc/nginx/ssl/
+    networks:
+      keycloak-network-backend:
+        ipv4_address: 172.16.238.5
+    extra_hosts:
+      - frontend:172.16.238.3
+      - keycloak:172.16.238.4
+    ports:
+      - 80:80
+      - 443:443
+# ---------------------------------------------------------
+# ---------------------------------------------------------
+networks:
+  keycloak-network-backend:
+    ipam:
+      driver: default
+      config:
+        - subnet: 172.16.238.0/24

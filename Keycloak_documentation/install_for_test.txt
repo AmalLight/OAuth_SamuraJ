@@ -1,0 +1,171 @@
+# Docker
+
+sudo apt install -y docker docker.io docker-compose
+
+# For openJDK
+
+cd ~/kc-book
+unzip ~/Downloads/keycloak-11.0.1.zip
+cd keycloak-11.0.1
+export KC_HOME=~/kc-book/keycloak-11.0.1
+
+cd $KC_HOME
+bin/add-user-keycloak.sh -u admin -p admin
+
+cd $KC_HOME
+bin/standalone.sh
+
+# ----------------------------------
+
+Security Assertion Markup Language (SAML) 2.0 is one of the most widely used open standard for authentication and authorizing between multiple parties. It’s one of the protocol that give users the single sign-on (SSO) experience for applications. The other adopted open standard is OAuth and OpenID. Of the two, SAML 2.0, released in 2005, remains the 800 pound gorilla in Enterprise SSO space. This post provides a detailed introduction on how SAML works
+
+# ----------------------------------
+
+realm = reame == environment or space or branch or ...
+from Master --> add realm
+
+----------------------------------
+
+with this:
+
+   - docker volume create todo-db
+
+   - docker run --name upbeat_goodall \
+                 -e KEYCLOAK_USER=admin          \
+                 -e KEYCLOAK_PASSWORD=admin      \
+                 -v todo-db:/opt/jboss/keycloak  \
+                 -d -p 8080:8080                 \
+                 \
+                 quay.io/keycloak/keycloak                
+
+   - docker ps -all | grep quay.io/keycloak/keycloak
+   - docker update --restart=always upbeat_goodall # be careful to assign restart for: "-e KEYCLOAK_USER=admin ..."
+     docker run --name upbeat_goodall \
+                 -v todo-db:/opt/jboss/keycloak  \
+                 -d -p 8080:8080                 \
+                 \
+                 quay.io/keycloak/keycloak    
+
+   - stop.sh:
+      + echo "docker stop upbeat_goodall ; sleep 10 ; /sbin/shutdown now" > stop.sh
+      
+   - jboss.sh:
+      + echo 'docker exec -it upbeat_goodall sh -c "cd /opt/jboss/keycloak/bin ; bash"' > jboss.sh
+
+# ----------------------------------
+
+192.168.x.y:8080/auth/admin/ # Admin
+- create realm myrealm
+- create role  myrole
+- set your Groups role
+- SAML 2.0 Identity Provider Metadata
+- create user kaumi
+
+reach server from: 192.168.x.y:8080
+test user: kaumi
+credentials: 123
+group: smart
+
+if this happens:
+   - User with username 'admin' already added to '/opt/jboss/keycloak/standalone/configuration/keycloak-add-user.json'
+source:
+   - cd /var/lib/docker/volumes/todo-db/_data/
+   - cat ./standalone/configuration/keycloak-add-user.json
+
+----------------------------------
+
+git clone https://github.com/PacktPublishing/Keycloak-Identity-and-Access-Management-for-Modern-Applications.git
+
+# modded in this way on client/frontend
+var KC_URL      = process.env.KC_URL      || "http://192.168.x.y:8080/auth"    ;
+var SERVICE_URL = process.env.SERVICE_URL || "http://192.168.x.y:3000/secured" ;
+app.listen ( 8000 , '0.0.0.0' ) ;
+
+#modded in this way on server/backend
+app.listen ( 3000 , '0.0.0.0', function () {
+
+----------------------------------
+
+When the user clicks on the login button in the frontend application, the browser is redirected to the Keycloak login page.
+( the login page can be inserted using an <html Iframe> ? )
+The user then authenticates with Keycloak,
+
+before the browser is redirected back to the application with a special code called an authorization code.
+The application then invokes Keycloak to exchange the authorization code for the following tokens:
+
+• An ID token: This provides the application information pertaining to the authenticated user.
+• An access token: The application includes this token when making a request to a service,
+  which allows the service to verify whether the request should be permitted.
+• A refresh token: Both the ID and the access token have short expirations, by default, 5 minutes.
+  The refresh token is used by the application to obtain new tokens from Keycloak.
+
+----------------------------------
+
+sniffing keyloack with: OpenID Connect Playground, you can find this on scripts of ch4...
+
+main info:
+"issuer": "http://192.168.31.9:8080/auth/realms/myrealm",
+"authorization_endpoint": "http://192.168.31.9:8080/auth/realms/myrealm/protocol/openid-connect/auth",
+"token_endpoint": "http://192.168.31.9:8080/auth/realms/myrealm/protocol/openid-connect/token",
+"introspection_endpoint": "http://192.168.31.9:8080/auth/realms/myrealm/protocol/openid-connect/token/introspect",
+"userinfo_endpoint": "http://192.168.31.9:8080/auth/realms/myrealm/protocol/openid-connect/userinfo",
+"end_session_endpoint": "http://192.168.31.9:8080/auth/realms/myrealm/protocol/openid-connect/logout",
+"jwks_uri": "http://192.168.31.9:8080/auth/realms/myrealm/protocol/openid-connect/certs",
+"check_session_iframe": "http://192.168.31.9:8080/auth/realms/myrealm/protocol/openid-connect/login-status-iframe.html",
+"pushed_authorization_request_endpoint": "http://192.168.31.9:8080/auth/realms/myrealm/protocol/openid-connect/ext/par/request",
+
+Understanding the ID token : <Header>.<Payload>.<Signature>
+
+----------------------------------
+
+Main Left Side ( UP ) Components:
+ - Realm Settings     :: //
+ - Clients            :: main clients ( only one in filter ) , it has { Client Scopes=Scopes, Mappers=Attributes }
+ - Client Scopes      :: it has { Client Scopes=sub_scopes, Mappers=Attributes }
+ - Roles              :: different possible skills
+ - Identity Providers :: 
+ - User Federation    :: 
+ - Authentication     :: 
+
+Other:
+ - Groups   :: relation with Attributes && Roles
+ - Users
+ - Sessions
+ - Events
+ - Import
+ - Export
+
+* Graph for every Realm:
+    - Client
+       - Scopes from Client Scope
+    - Users
+       - group
+          - role or roles
+          - attributes
+       - attributes
+       - role
+    - Role
+       - Attributes
+       - users
+    - Group
+       - users
+       - attributes
+
+----------------------------------
+
+Logout:
+How should you deal with logout?
+In summary, the simplest approach is simply to rely on relatively short application sessions 
+and token expiration. As Keycloak will keep the user logged in, it is possible to effectively 
+use short application sessions without requiring users to frequently re-authenticate.
+In other cases, or where logout has to be instant, you should leverage OIDC  
+Back-Channel logout.
+
+----------------------------------
+
+Per farsi ascoltare dal backend ricordarsi di modificare il file: keycloak.json
+
+----------------------------------
+
+KC home dir from vm 192.168.X.9, is: cd /var/lib/docker/volumes/todo-db/_data/bin/
+            from docker          is: cd /opt/keycloak/bin

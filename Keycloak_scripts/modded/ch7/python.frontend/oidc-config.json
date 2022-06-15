@@ -1,0 +1,13 @@
+{
+  "web": {
+    "client_id": "mywebapp",
+    "client_secret": "fb3aefef-9664-423d-b308-c0807f9332ee",
+    "auth_uri": "https://mykeycloak/auth/realms/myrealm/protocol/openid-connect/auth",
+    "token_uri": "https://mykeycloak/auth/realms/myrealm/protocol/openid-connect/token",
+    "issuer": "https://mykeycloak/auth/realms/myrealm",
+    "userinfo_uri": "https://mykeycloak/auth/realms/myrealm/protocol/openid-connect/userinfo",
+    "redirect_uris": [
+      "http://192.168.31.7:8000/oidc/callback"
+    ]
+  }
+}

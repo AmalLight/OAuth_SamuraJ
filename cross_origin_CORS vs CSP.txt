@@ -1,0 +1,7 @@
+cross origin --> permette di puntare dal proprio sito web a risorse fuori dal proprio dominio ( webServer/webFramework )
+
+csp <-- consente di implementare un livello di sicurezza header che espliciti la provenienza attuale o/e concessa delle proprie risorse, inoltre abilita o disabilita alcune componenti html
+
+Valid Redirect URIs --> attributo di keycloak per il filtraggio degli indirizzi di destinazione
+
+Web Origin --> attributo di keycloak per il filtraggio degli indirizzi di provenienza
